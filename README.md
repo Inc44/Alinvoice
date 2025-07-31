@@ -26,7 +26,7 @@
 ## 🚀 Installation
 
 ```bash
-conda create -n alinvoice python=3.9 # up to 3.13
+conda create -n alinvoice python=3.9 # up to 3.11
 conda activate alinvoice
 git clone https://github.com/Inc44/Alinvoice.git
 cd Alinvoice

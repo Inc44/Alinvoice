@@ -5,30 +5,43 @@ import webbrowser
 import pyautogui
 from bs4 import BeautifulSoup
 
-for i in range(1, 19):
-	file_path = f"dataset/{i}.html"
-	if os.path.exists(file_path):
-		with open(file_path, "r", encoding="utf-8") as f:
-			soup = BeautifulSoup(f.read(), "html.parser")
-		for a in soup.find_all(
-			"a", href=lambda h: h and "trade.aliexpress.com/order_detail.htm" in h
-		):
-			order_id = a.text.strip()
-			if not order_id:
-				order_id = a["href"].split("orderId=")[1].split("&")[0]
-			url = f"https://trade.aliexpress.com/order_detail.htm?orderId={order_id}"
-			webbrowser.open_new_tab(url)
-			time.sleep(4)
-			for _ in range(10):
-				try:
-					location = pyautogui.locateOnScreen(
-						"images/download invoice button.png", confidence=0.8
-					)
-					if location:
-						pyautogui.click(pyautogui.center(location))
-						time.sleep(3)
-						break
-				except:
-					pass
-				time.sleep(3)
-			pyautogui.hotkey("ctrl", "w")
+dataset_dir_path = "dataset"
+first_page = 1
+last_page = 18
+order_url_template = "https://trade.aliexpress.com/order_detail.htm?orderId="
+download_button_image = "images/download button.png"
+download_invoice_button_image = "images/download invoice button.png"
+receipt_button_image = "images/receipt button.png"
+detection_confidence = 0.8
+initial_wait_seconds = 4
+retry_wait_seconds = 3
+max_retries = 10
+post_click_wait_seconds = 3
+for page_number in range(first_page, last_page + 1):
+	page_path = f"{dataset_dir_path}/{page_number}.html"
+	if not os.path.exists(page_path):
+		continue
+	with open(page_path, "r", encoding="utf-8") as page_file:
+		soup = BeautifulSoup(page_file.read(), "html.parser")
+	for anchor in soup.find_all(
+		"a",
+		href=lambda href: href and "trade.aliexpress.com/order_detail.htm" in href,
+	):
+		order_id = (
+			anchor.text.strip() or anchor["href"].split("orderId=")[1].split("&")[0]
+		)
+		webbrowser.open_new_tab(f"{order_url_template}{order_id}")
+		time.sleep(initial_wait_seconds)
+		for _ in range(max_retries):
+			try:
+				button_location = pyautogui.locateOnScreen(
+					download_invoice_button_image, confidence=detection_confidence
+				)
+				if button_location:
+					pyautogui.click(pyautogui.center(button_location))
+					time.sleep(post_click_wait_seconds)
+					break
+			except pyautogui.ImageNotFoundException:
+				pass
+			time.sleep(retry_wait_seconds)
+		pyautogui.hotkey("ctrl", "w")

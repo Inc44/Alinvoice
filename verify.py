@@ -2,23 +2,32 @@ import os
 
 from bs4 import BeautifulSoup
 
-download_dir = "D:/downloads"
-expected = set()
-for i in range(1, 19):
-	file_path = f"dataset/{i}.html"
-	if os.path.exists(file_path):
-		with open(file_path, "r", encoding="utf-8") as f:
-			soup = BeautifulSoup(f.read(), "html.parser")
-		for a in soup.find_all("a", href=lambda h: h and "trade.aliexpress.com" in h):
-			order_id = a.text.strip() or a["href"].split("orderId=")[1].split("&")[0]
-			expected.add(f"{order_id}_payment.pdf")
-missing = expected - set(os.listdir(download_dir))
-if missing:
+dataset_dir_path = "dataset"
+first_page = 1
+last_page = 18
+download_dir_path = "D:/downloads"
+expected_payments = set()
+for page_number in range(first_page, last_page + 1):
+	page_path = f"{dataset_dir_path}/{page_number}.html"
+	if not os.path.exists(page_path):
+		continue
+	with open(page_path, "r", encoding="utf-8") as page_file:
+		soup = BeautifulSoup(page_file.read(), "html.parser")
+	for anchor in soup.find_all(
+		"a",
+		href=lambda href: href and "trade.aliexpress.com" in href,
+	):
+		order_id = (
+			anchor.text.strip() or anchor["href"].split("orderId=")[1].split("&")[0]
+		)
+		expected_payments.add(f"{order_id}_payment.pdf")
+missing_payments = expected_payments - set(os.listdir(download_dir_path))
+if missing_payments:
 	print("Missing invoice files:")
-	for file in missing:
-		order_id = file.replace("_payment.pdf", "")
+	for payment_path in sorted(missing_payments):
+		order_id = payment_path.replace("_payment.pdf", "")
 		print(
-			f"- {file}: https://trade.aliexpress.com/order_detail.htm?orderId={order_id}"
+			f"- {payment_path}: https://trade.aliexpress.com/order_detail.htm?orderId={order_id}"
 		)
 else:
 	print("All expected invoice files are present.")
