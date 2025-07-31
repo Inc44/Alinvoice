@@ -1,0 +1,4 @@
+PyAutoGUI==0.9.54
+beautifulsoup4==4.13.4
+opencv-python==4.12.0.88
+urllib3==2.5.0
