@@ -5,7 +5,7 @@ import webbrowser
 import pyautogui
 from bs4 import BeautifulSoup
 
-dataset_dir_path = "dataset"
+dataset_dir_path = input("Enter the path to the dataset directory: ").strip()
 first_page = 1
 last_page = 23
 order_url_template = "https://trade.aliexpress.com/order_detail.htm?orderId="

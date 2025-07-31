@@ -3,10 +3,10 @@ import re
 
 from bs4 import BeautifulSoup
 
-dataset_dir_path = "dataset"
+dataset_dir_path = input("Enter the path to the dataset directory: ").strip()
 first_page = 1
 last_page = 23
-download_dir_path = "D:/downloads"
+download_dir_path = input("Enter the path to the download directory: ").strip()
 expected_orders = set()
 for page_number in range(first_page, last_page + 1):
 	page_path = f"{dataset_dir_path}/{page_number}.html"
