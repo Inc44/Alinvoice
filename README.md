@@ -12,16 +12,20 @@
 [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/Inc44)
 [![Build](https://github.com/Inc44/Alinvoice/actions/workflows/build.yml/badge.svg)](https://github.com/Inc44/Alinvoice/actions/workflows/build.yml)
 
-## Original Logic for AliExpress February 2025
+## 💡 Logic for AliExpress February 2025
 
 1. Loads dataset HTML files numbered from 1 to n.
 2. Finds all `<a>` tags with `href` containing `https://trade.aliexpress.com/order_detail.htm`.
-3. Extracts the `<a>` tag content ID.
-4. Opens a tab with `https://trade.aliexpress.com/order_detail.htm?orderId=` followed by the extracted `<a>` tag content ID.
+3. Extracts the `<a>` tag's content ID.
+4. Opens a tab with `https://trade.aliexpress.com/order_detail.htm?orderId=` followed by the extracted `<a>` tag's content ID.
 5. Detects the image `download invoice button.png` on the screen. If not found, starts a function that records the start time and retries until the timeout is reached.
 6. Clicks the detected location.
 7. Closes the tab.
 8. Continues to the next content ID.
+
+## 💡 Logic for AliExpress July 2025
+
+Same as for February, except there are two buttons and PDF was replaced with PNG.
 
 ## 🚀 Installation
 

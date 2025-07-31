@@ -5,12 +5,11 @@ import webbrowser
 import pyautogui
 from bs4 import BeautifulSoup
 
-dataset_dir_path = "dataset"
+dataset_dir_path = "dataset/202507 Icy Fear"
 first_page = 1
 last_page = 23
 order_url_template = "https://trade.aliexpress.com/order_detail.htm?orderId="
-receipt_button_image = "images/receipt button.png"
-download_button_image = "images/download button.png"
+download_invoice_button_image = "images/download invoice button.png"
 detection_confidence = 0.8
 initial_wait_seconds = 4
 retry_wait_seconds = 3
@@ -34,19 +33,7 @@ for page_number in range(first_page, last_page + 1):
 		for _ in range(max_retries):
 			try:
 				button_location = pyautogui.locateOnScreen(
-					receipt_button_image, confidence=detection_confidence
-				)
-				if button_location:
-					pyautogui.click(pyautogui.center(button_location))
-					time.sleep(post_click_wait_seconds)
-					break
-			except pyautogui.ImageNotFoundException:
-				pass
-			time.sleep(retry_wait_seconds)
-		for _ in range(max_retries):
-			try:
-				button_location = pyautogui.locateOnScreen(
-					download_button_image, confidence=detection_confidence
+					download_invoice_button_image, confidence=detection_confidence
 				)
 				if button_location:
 					pyautogui.click(pyautogui.center(button_location))

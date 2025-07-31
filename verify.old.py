@@ -1,5 +1,4 @@
 import os
-import re
 
 from bs4 import BeautifulSoup
 
@@ -7,7 +6,7 @@ dataset_dir_path = "dataset"
 first_page = 1
 last_page = 23
 download_dir_path = "D:/downloads"
-expected_orders = set()
+expected_payments = set()
 for page_number in range(first_page, last_page + 1):
 	page_path = f"{dataset_dir_path}/{page_number}.html"
 	if not os.path.exists(page_path):
@@ -21,20 +20,14 @@ for page_number in range(first_page, last_page + 1):
 		order_id = (
 			anchor.text.strip() or anchor["href"].split("orderId=")[1].split("&")[0]
 		)
-		expected_orders.add(order_id)
-downloaded_orders = set(os.listdir(download_dir_path))
-missing_orders = set()
-for order_id in expected_orders:
-	if not any(
-		re.fullmatch(rf"OrderSummary\d{{8}}{order_id}\.png", name)
-		for name in downloaded_orders
-	):
-		missing_orders.add(order_id)
-if missing_orders:
+		expected_payments.add(f"{order_id}_payment.pdf")
+missing_payments = expected_payments - set(os.listdir(download_dir_path))
+if missing_payments:
 	print("Missing invoice files:")
-	for order_id in sorted(missing_orders):
+	for payment_path in sorted(missing_payments):
+		order_id = payment_path.replace("_payment.pdf", "")
 		print(
-			f"- OrderSummary????????{order_id}.png: https://trade.aliexpress.com/order_detail.htm?orderId={order_id}"
+			f"- {payment_path}: https://trade.aliexpress.com/order_detail.htm?orderId={order_id}"
 		)
 else:
 	print("All expected invoice files are present.")
